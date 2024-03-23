@@ -10,7 +10,7 @@ try {
 }
 
 // Yapmak istediğiniz işlemi alın
-$action = readline("Yapmak istediğiniz işlemi seçin (backup/restore): ");
+$action = readline("Yapmak istediğiniz işlemi seçin (backup/restore/fullrestore): ");
 
 try {
     if ($action === 'backup' || $action === 'BACKUP') {
@@ -19,6 +19,10 @@ try {
     } elseif ($action === 'restore' || $action === 'RESTORE') {
         // Geri yükleme işlemi
         restoreDatabase($db);
+    } elseif ($action === 'fullrestore' || $action === 'FULLRESTORE') {
+        // Tam geri yükleme işlemi
+        restoreFullDatabase($db);
+        echo "Tam geri yükleme işlemi başarıyla tamamlandı\n";
     } else {
         echo "Geçersiz işlem. Lütfen 'backup' veya 'restore' seçin. İşlemi tekrar başlatın\n";
     }
@@ -93,6 +97,24 @@ function restoreDatabase($db)
         }
     } else {
         echo "posts tablosu zaten var\n";
+    }
+}
+
+function restoreFullDatabase($db)
+{
+    //Blogs database geri yükleme
+    $dbConnection = $db->connect();
+    $stmt = $dbConnection->query("SHOW TABLES LIKE 'blogs'");
+    if ($stmt->rowCount() == 0) {
+        $importSql = file_get_contents("restore/blogs.sql");
+        if ($importSql !== false) {
+            $dbConnection->exec($importSql);
+            echo "blogs database başarıyla geri yüklendi\n";
+        } else {
+            echo "blogs.sql dosyası okunurken bir hata oluştu\n";
+        }
+    } else {
+        echo "blogs database zaten var\n";
     }
 }
 
