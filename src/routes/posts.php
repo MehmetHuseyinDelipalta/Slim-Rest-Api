@@ -31,7 +31,7 @@ $app->get('/posts/{id}/comments', function (Request $request, Response $response
 
     try {
         $db = $db->connect();
-        $comments = $db->query("SELECT * FROM comments WHERE postIds = " . $args['id'])->fetchAll(PDO::FETCH_OBJ);
+        $comments = $db->query("SELECT * FROM comments WHERE postId = " . $args['id'])->fetchAll(PDO::FETCH_OBJ);
         $db = null;
         $response->getBody()->write(json_encode($comments));
         return $response->withHeader('Content-Type', 'application/json');
